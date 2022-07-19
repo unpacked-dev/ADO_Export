@@ -1,0 +1,14 @@
+{
+    "name": "ADO_Downloader",
+    "description": "A ADO downloader for ticket documentation",
+    "version": "1.0",
+    "manifest_version": 3,
+    "content_scripts": [{
+      "js": ["./asset/js/script.js"],
+      "matches": ["https://*/*"]
+    }],
+    "web_accessible_resources": [{
+        "resources": ["*.js", "*.json"],
+        "matches": ["https://*/*"]
+    }]
+  }

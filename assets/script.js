@@ -29,23 +29,56 @@ const getDiscussion = () => {
 //Download markdown file
 const download = () => {
     const downloadContainer = document.createElement('div');
-    downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA" download="ADO_${getType()}_${getTicketNumber()}.md">text file</a>`;
+    downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:text/markdown;charset=utf-8,${generateBase64(generateMarkdown())}" download="ADO_${getType()}_${getTicketNumber()}.md">text file</a>`;
     document.body.appendChild(downloadContainer);
     document.querySelector('#ADO_DOWNLOAD').click();
 }
 
-//Get Ticket Number
+//Get ticket number
 const getTicketNumber = () => {
     const ticketno = parseInt(document.querySelector('.work-item-form-id span').innerText);
     return typeof ticketno == "number" ? ticketno : null;
 }
 
-//Get Ticket Title
+//Get ticket title
 const getTitle = () => {
-    return document.querySelector('#witc_321_txt').value;
+    return document.querySelector('.work-item-form-title input').value;
 }
 
-//Get Ticket Type
+//Get ticket type
 const getType = () => {
     return document.querySelector('.work-item-type-icon').getAttribute('aria-label');
+}
+
+//Get ticket link
+const getLink = () => {
+    return document.location.href;
+}
+
+//Build markdown file
+const generateMarkdown = () => {
+return `
+# **ADO:${getType()}#${getTicketNumber()} - ${getTitle()}**
+
+## **Link zum Ticket**: 
+${getLink()}
+
+## **Was ist das Problem?**
+\`\`\`
+${getDescription()}
+\`\`\`
+
+## **Wie wurde das Problem gelöst?**
+\`\`\`
+
+\`\`\`
+
+# **Sonstiges**
+Tags:
+`
+}
+
+//Generates base64 from text
+const generateBase64 = (text) => {
+    return encodeURIComponent(text);
 }
