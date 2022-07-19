@@ -28,5 +28,24 @@ const getDiscussion = () => {
 
 //Download markdown file
 const download = () => {
-    return '<a href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA">text file</a>';
+    const downloadContainer = document.createElement('div');
+    downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:application/octet-stream;charset=utf-16le;base64,//5mAG8AbwAgAGIAYQByAAoA" download="ADO_${getType()}_${getTicketNumber()}.md">text file</a>`;
+    document.body.appendChild(downloadContainer);
+    document.querySelector('#ADO_DOWNLOAD').click();
+}
+
+//Get Ticket Number
+const getTicketNumber = () => {
+    const ticketno = parseInt(document.querySelector('.work-item-form-id span').innerText);
+    return typeof ticketno == "number" ? ticketno : null;
+}
+
+//Get Ticket Title
+const getTitle = () => {
+    return document.querySelector('#witc_321_txt').value;
+}
+
+//Get Ticket Type
+const getType = () => {
+    return document.querySelector('.work-item-type-icon').getAttribute('aria-label');
 }
