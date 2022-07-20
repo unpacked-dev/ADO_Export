@@ -2,7 +2,8 @@
 //Reads ticket description
 //Returns ticket description
 const getDescription = () => {
-    return document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerText;
+    let description = document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerText;
+    return description;
 }
 
 //Reads the tickets discussion
@@ -28,8 +29,13 @@ const getDiscussion = () => {
 
 //Download markdown file
 const download = () => {
+    let filename = `ADO ${getType()} ${getTicketNumber()} ${getTitle()}.md`;
+    filename = filename.replaceAll(' ', '_');
+
+    const base64Content = generateBase64(generateMarkdown());
+
     const downloadContainer = document.createElement('div');
-    downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:text/markdown;charset=utf-8,${generateBase64(generateMarkdown())}" download="ADO_${getType()}_${getTicketNumber()}.md">text file</a>`;
+    downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:text/markdown;charset=utf-8,${base64Content}" download="${filename}">text file</a>`;
     document.body.appendChild(downloadContainer);
     document.querySelector('#ADO_DOWNLOAD').click();
 }
