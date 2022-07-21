@@ -3,6 +3,7 @@
 //Returns ticket description
 const getDescription = () => {
     let description = document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerText;
+    description = description.replaceAll('\n\n', '\n');
     return description;
 }
 
@@ -88,3 +89,12 @@ Tags:
 const generateBase64 = (text) => {
     return encodeURIComponent(text);
 }
+
+//Init
+const initScript = () => {
+    const downloadBtnContainer = document.createElement('div');
+    downloadBtnContainer.innerHTML = '<button onclick="download();" style="position: fixed; right: 40px; bottom: 20px;">Download Ticket</button>'
+    document.body.appendChild(downloadBtnContainer);
+}
+
+initScript();
