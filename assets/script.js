@@ -90,11 +90,33 @@ const generateBase64 = (text) => {
     return encodeURIComponent(text);
 }
 
+//Detect URL Change
+const onUrlChange = () => {
+    if(location.href.includes('workitems/edit/')) {
+        try {
+            document.querySelector('#TRIGGER_DL_BTN').style.display = 'block';
+        } catch(err) {};
+        return;
+    }
+    document.querySelector('#TRIGGER_DL_BTN').style.display = 'none';
+}
+
 //Init
 const initScript = () => {
+    //Create Button
     const downloadBtnContainer = document.createElement('div');
-    downloadBtnContainer.innerHTML = '<button onclick="download();" style="position: fixed; right: 40px; bottom: 20px;">Download Ticket</button>'
+    downloadBtnContainer.innerHTML = '<button id="TRIGGER_DL_BTN" onclick="download();" style="position: fixed; right: 40px; bottom: 20px; display: none;">Download Ticket</button>'
     document.body.appendChild(downloadBtnContainer);
+
+    //Display Button on Ticket Page
+    let lastUrl = location.href; 
+    new MutationObserver(() => {
+        const url = location.href;
+        if (url !== lastUrl) {
+            lastUrl = url;
+            onUrlChange();
+        }
+    }).observe(document, {subtree: true, childList: true});
 }
 
 initScript();
