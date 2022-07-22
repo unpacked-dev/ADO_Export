@@ -14,8 +14,8 @@ const getDiscussion = () => {
     let commentsList = [];
 
     for(let i = 0; i < comments.length; i++) {
-        const content = comments[0].querySelector('.comment-content').innerText;
-        const author = comments[0].querySelector('.user-display-name').innerText;
+        const content = comments[i].querySelector('.comment-content').innerText;
+        const author = comments[i].querySelector('.user-display-name').innerText;
 
         const comment = {
             "content": content,
@@ -25,7 +25,22 @@ const getDiscussion = () => {
         commentsList.push(comment);
     }
 
-    return commentsList;
+    return commentsList.reverse();
+}
+
+//Generates Markdown for discussion
+const generateDiscussionMD = (discussion) => {
+    if(!discussion) return;
+    
+    let discussionMD = '';
+    for(let i = 0; i < discussion.length; i++) {
+        discussionMD += '\`\`\`';
+        discussionMD += discussion[i].author + '\n';
+        discussionMD += discussion[i].content;
+        discussionMD += '\`\`\`';
+    }
+
+    return discussionMD;
 }
 
 //Download markdown file
@@ -64,6 +79,9 @@ const getLink = () => {
 
 //Build markdown file
 const generateMarkdown = () => {
+
+
+
 return `
 # **ADO:${getType()}#${getTicketNumber()} - ${getTitle()}**
 
@@ -73,6 +91,11 @@ ${getLink()}
 ## **Was ist das Problem?**
 \`\`\`
 ${getDescription()}
+\`\`\`
+
+## **Kommentare:**
+\`\`\`
+
 \`\`\`
 
 ## **Wie wurde das Problem gelöst?**
