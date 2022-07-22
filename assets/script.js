@@ -1,3 +1,16 @@
+//CONSTATNTS
+const constants = {
+    md_code: '\`\`\`',
+    md_doc_link: '## **Link zum Ticket**:',
+    md_doc_problem: '## **Was ist das Problem?**',
+    md_doc_comments: '## **Kommentare:**',
+    md_doc_solutions: '## **Wie wurde das Problem gelöst?**',
+    md_doc_others: '## **Sonstiges**',
+    md_doc_tags: 'Tags:',
+
+    addon_ticket_path: 'workitems/edit/'
+}
+
 
 //Reads ticket description
 //Returns ticket description
@@ -34,10 +47,10 @@ const generateDiscussionMD = (discussion) => {
     
     let discussionMD = '';
     for(let i = 0; i < discussion.length; i++) {
-        discussionMD += '\`\`\`';
+        discussionMD += constants.md_code;
         discussionMD += discussion[i].author + '\n';
         discussionMD += discussion[i].content;
-        discussionMD += '\`\`\`';
+        discussionMD += constants.md_code;
     }
 
     return discussionMD;
@@ -79,32 +92,29 @@ const getLink = () => {
 
 //Build markdown file
 const generateMarkdown = () => {
-
-
-
 return `
 # **ADO:${getType()}#${getTicketNumber()} - ${getTitle()}**
 
-## **Link zum Ticket**: 
+${constants.md_doc_link}
 ${getLink()}
 
-## **Was ist das Problem?**
-\`\`\`
+${md_doc_problem}
+${constants.md_code}
 ${getDescription()}
-\`\`\`
+${constants.md_code}
 
-## **Kommentare:**
-\`\`\`
+${constants.md_doc_comments}
+${constants.md_code}
+${generateDiscussionMD(getDiscussion())}
+${constants.md_code}
 
-\`\`\`
+${md_doc_solutions}
+${constants.md_code}
 
-## **Wie wurde das Problem gelöst?**
-\`\`\`
+${constants.md_code}
 
-\`\`\`
-
-# **Sonstiges**
-Tags:
+${constants.md_doc_others}
+${md_doc_tags}
 `
 }
 
@@ -115,7 +125,7 @@ const generateBase64 = (text) => {
 
 //Detect URL Change
 const onUrlChange = () => {
-    if(location.href.includes('workitems/edit/')) {
+    if(location.href.includes(constants.addon_ticket_path)) {
         try {
             document.querySelector('#TRIGGER_DL_BTN').style.display = 'block';
         } catch(err) {};
