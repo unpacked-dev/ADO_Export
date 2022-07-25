@@ -16,8 +16,7 @@ const constants = {
 //Reads ticket description
 //Returns ticket description
 const getDescription = () => {
-    let description = document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerText;
-    description = description.replaceAll('\n\n', '\n');
+    let description = document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerHTML;
     return description;
 }
 
@@ -102,9 +101,8 @@ ${constants.md_doc_link}
 ${getLink()}
 
 ${constants.md_doc_problem}
-${constants.md_code}
 ${getDescription()}
-${constants.md_code}
+${constants.md_seperator}
 
 ${constants.md_doc_comments}
 ${generateDiscussionMD(getDiscussion())}
@@ -113,6 +111,7 @@ ${constants.md_doc_solutions}
 ${constants.md_code}
 
 ${constants.md_code}
+${constants.md_seperator}
 
 ${constants.md_doc_others}
 ${constants.md_doc_tags}
