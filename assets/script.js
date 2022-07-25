@@ -15,19 +15,37 @@ const constants = {
 
 //Reads ticket description
 //Returns ticket description
-const getDescription = () => {
+const getDescription = async () => {
     let description = document.querySelector('.lean-rooster.rooster-editor.text-element.view-mode').innerHTML;
-    return description;
+    let result = description;
+
+    const exp = new RegExp(/src\s?=\s?"([^"]*)"/g);
+    let match = null;
+    while ((match = exp.exec(description)) !== null) {
+        let [, src] = match;
+        result = result.replace(src, await getBase64FromImageUrl(src));
+    }
+
+    return result;
 }
 
 //Reads the tickets discussion
 //Returns array with all comments
-const getDiscussion = () => {
+const getDiscussion = async () => {
     let comments = document.querySelectorAll('.comments-section .wit-comment-item');
     let commentsList = [];
 
     for(let i = 0; i < comments.length; i++) {
         let content = comments[i].querySelector('.comment-content').innerHTML;
+        let result = content;
+        const exp = new RegExp(/src\s?=\s?"([^"]*)"/g);
+        let match = null;
+        while ((match = exp.exec(content)) !== null) {
+            let [, src] = match;
+            result = result.replace(src, await getBase64FromImageUrl(src));
+        }
+        content = result;
+
         const author = comments[i].querySelector('.user-display-name').innerText;
         const timestamp = comments[i].querySelector('.comment-timestamp').innerText;
 
@@ -59,11 +77,11 @@ const generateDiscussionMD = (discussion) => {
 }
 
 //Download markdown file
-const download = () => {
+const download = async () => {
     let filename = `ADO ${getType()} ${getTicketNumber()} ${getTitle()}.md`;
     filename = filename.replaceAll(' ', '_');
 
-    const base64Content = generateBase64(generateMarkdown());
+    const base64Content = generateBase64(await generateMarkdown());
 
     const downloadContainer = document.createElement('div');
     downloadContainer.innerHTML = `<a id="ADO_DOWNLOAD" style="display: none;" href="data:text/markdown;charset=utf-8,${base64Content}" download="${filename}">text file</a>`;
@@ -93,7 +111,7 @@ const getLink = () => {
 }
 
 //Build markdown file
-const generateMarkdown = () => {
+const generateMarkdown = async () => {
 let mdFileContent = `
 # **ADO:${getType()}#${getTicketNumber()} - ${getTitle()}**
 
@@ -101,11 +119,11 @@ ${constants.md_doc_link}
 ${getLink()}
 
 ${constants.md_doc_problem}
-${getDescription()}
+${await getDescription()}
 ${constants.md_seperator}
 
 ${constants.md_doc_comments}
-${generateDiscussionMD(getDiscussion())}
+${generateDiscussionMD(await getDiscussion())}
 
 ${constants.md_doc_solutions}
 ${constants.md_code}
@@ -123,6 +141,23 @@ ${constants.md_doc_tags}
 //Generates base64 from text
 const generateBase64 = (text) => {
     return encodeURIComponent(text);
+}
+
+//Generates base64FromImgSource
+const getBase64FromImageUrl = (src) => {
+    return new Promise((resolve, reject) => {
+        var img = new Image();
+        img.onload = () => {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL("image/png");
+            resolve(dataURL);
+        };
+        img.src = src;
+    });
 }
 
 //Detect URL Change
