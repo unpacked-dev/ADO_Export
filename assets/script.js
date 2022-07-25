@@ -1,6 +1,7 @@
 //CONSTATNTS
 const constants = {
     md_code: '\`\`\`',
+    md_seperator: '\n\n --- \n\n',
     md_doc_link: '## **Link zum Ticket**:',
     md_doc_problem: '## **Was ist das Problem?**',
     md_doc_comments: '## **Kommentare:**',
@@ -27,12 +28,14 @@ const getDiscussion = () => {
     let commentsList = [];
 
     for(let i = 0; i < comments.length; i++) {
-        const content = comments[i].querySelector('.comment-content').innerText;
+        let content = comments[i].querySelector('.comment-content').innerHTML;
         const author = comments[i].querySelector('.user-display-name').innerText;
+        const timestamp = comments[i].querySelector('.comment-timestamp').innerText;
 
         const comment = {
             "content": content,
-            "author": author
+            "author": author,
+            "timestamp": timestamp,
         }
 
         commentsList.push(comment);
@@ -47,10 +50,10 @@ const generateDiscussionMD = (discussion) => {
     
     let discussionMD = '';
     for(let i = 0; i < discussion.length; i++) {
-        discussionMD += constants.md_code;
-        discussionMD += discussion[i].author + '\n';
-        discussionMD += discussion[i].content;
-        discussionMD += constants.md_code;
+        discussionMD += '**' + discussion[i].author + ' ' + discussion[i].timestamp + ':** \n\n';
+        discussionMD += discussion[i].content + '\n';
+        discussionMD += constants.md_seperator;
+        discussionMD += '\n';
     }
 
     return discussionMD;
@@ -92,30 +95,30 @@ const getLink = () => {
 
 //Build markdown file
 const generateMarkdown = () => {
-return `
+let mdFileContent = `
 # **ADO:${getType()}#${getTicketNumber()} - ${getTitle()}**
 
 ${constants.md_doc_link}
 ${getLink()}
 
-${md_doc_problem}
+${constants.md_doc_problem}
 ${constants.md_code}
 ${getDescription()}
 ${constants.md_code}
 
 ${constants.md_doc_comments}
-${constants.md_code}
 ${generateDiscussionMD(getDiscussion())}
-${constants.md_code}
 
-${md_doc_solutions}
+${constants.md_doc_solutions}
 ${constants.md_code}
 
 ${constants.md_code}
 
 ${constants.md_doc_others}
-${md_doc_tags}
+${constants.md_doc_tags}
 `
+
+    return mdFileContent;
 }
 
 //Generates base64 from text
@@ -140,6 +143,7 @@ const initScript = () => {
     const downloadBtnContainer = document.createElement('div');
     downloadBtnContainer.innerHTML = '<button id="TRIGGER_DL_BTN" onclick="download();" style="position: fixed; right: 40px; bottom: 20px; display: none;">Download Ticket</button>'
     document.body.appendChild(downloadBtnContainer);
+    onUrlChange();
 
     //Display Button on Ticket Page
     let lastUrl = location.href; 
